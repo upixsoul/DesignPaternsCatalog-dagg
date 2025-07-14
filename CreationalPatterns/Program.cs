@@ -10,7 +10,7 @@ namespace CreationalPatterns
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, Welcome to DAGG Creational Patterns Catalog");
+            Console.WriteLine("Hello, Welcome to DAGG Patterns Catalog");
             Console.WriteLine("This catalog contains examples of various creational design patterns.");
 
             #region Singleton
