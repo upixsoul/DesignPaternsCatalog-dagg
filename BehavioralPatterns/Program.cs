@@ -3,14 +3,22 @@ using BehavioralPatterns.Command;
 using BehavioralPatterns.Interpreter;
 using BehavioralPatterns.Iterator;
 using BehavioralPatterns.Mediator;
+using BehavioralPatterns.Mediator.Notifications;
+using BehavioralPatterns.Memento;
+using BehavioralPatterns.Observer;
 using BehavioralPatterns.Visitor;
-using System.Collections;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace BehavioralPatterns
 {
-    internal class Program
+    
+
+    public class Program
     {
-        static void Main(string[] args)
+        
+        static async Task Main(string[] args)
         {
             Console.WriteLine("Hello, Welcome to DAGG Patterns Catalog");
             Console.WriteLine("This catalog contains examples of various creational design patterns.");
@@ -172,7 +180,66 @@ namespace BehavioralPatterns
             Ringo.Send("George", "My sweet Lord");
             Paul.Send("John", "Can't buy me love");
             John.Send("Yoko", "My sweet love");
+
+            Console.WriteLine();
+            Console.WriteLine("Now Microsoft Approach");
+
+            var services = new ServiceCollection();
+            services.AddLogging(logging => logging.AddConsole());
+            services.AddSingleton<AddLogWhenStockIsChangedNotificationHandler>();
+            services.AddDbContextPool<MediatrPatternDbContext>(options =>
+                options.UseSqlServer("Data Source=ZEPHYRUS-G14;Initial Catalog=codefdb;Persist Security Info=True;User ID=sa;Password=6vsPKz6PrX11qM;Trust Server Certificate=True"));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+            //Register your NewMain class so that IMediator can be injected
+            services.AddTransient<MicrosoftImplementation>();
+            //Build el ServiceProvider
+            var provider = services.BuildServiceProvider();
+            //Resolve NewMain from the provider
+            var newMain = provider.GetRequiredService<MicrosoftImplementation>();
+            await newMain.Apply();
+            #endregion
+
+            #region Memento
+            Console.WriteLine();
+            Console.WriteLine("Testing Memento Pattern");
+            var textEditor = new EditorTexto();
+            var historial = new Historial();
+
+            textEditor.Write("Hello, David.");
+            historial.Save(textEditor);
+
+            textEditor.Write(" How are you doing?");
+            historial.Save(textEditor);
+            textEditor.Write(" I hope you are well.");
+            Console.WriteLine(textEditor.Read());
+
+            historial.Undo(textEditor);
+            Console.WriteLine(textEditor.Read());
+
+            historial.Undo(textEditor);
+            Console.WriteLine(textEditor.Read());
+            #endregion
+
+            #region Observer
+            Console.WriteLine();
+            Console.WriteLine("Testing Observer Pattern");
+            var sensor = new TemperatureSensor();
+            var alertSystem = new TemperatureAlert();
+
+            var subscription = sensor.Subscribe(alertSystem);
+            //Subscribe() adds alertSystem to the observers list inside sensor.
+            //alertSystem immediately receives the current temperature via OnNext().
+            //It also gets a reference to an Unsubscriber object that allows it to detach later if needed(Dispose()).
+            sensor.SetTemperature(25); // No alert
+            sensor.SetTemperature(21); // No alert
+            sensor.SetTemperature(25); // No alert
+            sensor.SetTemperature(20); // No alert
+            sensor.SetTemperature(35); // Alert!
+            subscription.Dispose(); // Unsubscribe
+            //alertSystem.OnCompleted(); // Notify completion
             #endregion
         }
+
+
     }
 }
