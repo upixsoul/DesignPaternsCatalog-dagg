@@ -6,6 +6,10 @@ using BehavioralPatterns.Mediator;
 using BehavioralPatterns.Mediator.Notifications;
 using BehavioralPatterns.Memento;
 using BehavioralPatterns.Observer;
+using BehavioralPatterns.State;
+using BehavioralPatterns.Strategy;
+using BehavioralPatterns.Template;
+using BehavioralPatterns.Template.OtherApproach;
 using BehavioralPatterns.Visitor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,14 +18,13 @@ using Microsoft.Extensions.Logging;
 namespace BehavioralPatterns
 {
     
-
     public class Program
     {
         
         static async Task Main(string[] args)
         {
             Console.WriteLine("Hello, Welcome to DAGG Patterns Catalog");
-            Console.WriteLine("This catalog contains examples of various creational design patterns.");
+            Console.WriteLine("This catalog contains examples of various behavioral design patterns.");
 
             #region Visitor
             Console.WriteLine("Testing Visitor Pattern");
@@ -236,7 +239,50 @@ namespace BehavioralPatterns
             sensor.SetTemperature(20); // No alert
             sensor.SetTemperature(35); // Alert!
             subscription.Dispose(); // Unsubscribe
-            //alertSystem.OnCompleted(); // Notify completion
+                                    //alertSystem.OnCompleted(); // Notify completion
+            #endregion
+
+            #region State
+            Console.WriteLine();
+            Console.WriteLine("Testing States Pattern");
+            var order = new OrderContext();
+            order.ShowStatus(); // Output: Pending
+            order.Proceed();
+            order.ShowStatus(); // Output: Shipped
+            order.Proceed();
+            order.ShowStatus(); // Output: Delivered
+            order.Proceed();    // Output: Order is already delivered. No further transitions.
+            #endregion
+
+            #region Strategy
+            Console.WriteLine();
+            Console.WriteLine("Testing Strategy Pattern");
+            var paymentViaCard = new PaymentContext(new CreditCardPayment());
+            paymentViaCard.ExecutePayment(100);
+
+            var paymentViaPayPal = new PaymentContext(new PayPalPayment());
+            paymentViaPayPal.ExecutePayment(200);
+            #endregion
+
+            #region Template
+            Console.WriteLine();
+            Console.WriteLine("Testing Template Pattern");
+            DatabaseMigration sqlMigration = new SqlScriptMigration();
+            sqlMigration.RunMigration();
+
+            Console.WriteLine();
+
+            DatabaseMigration codeMigration = new CodeBasedMigration();
+            codeMigration.RunMigration();
+
+            //Console.WriteLine("Other example");
+            //var csvProcessor = new CsvFileProcessor();
+            //csvProcessor.ProcessFile("data.csv");
+
+            //Console.WriteLine();
+
+            //var jsonProcessor = new JsonFileProcessor();
+            //jsonProcessor.ProcessFile("data.json");
             #endregion
         }
 
