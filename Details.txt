@@ -1,0 +1,9 @@
+Examples from
+Copilot
+Grok
+https://medium.com/@dnzcnyksl/mediator-pattern-in-c-109b691ff45b
+https://www.geeksforgeeks.org/system-design/software-design-patterns/
+https://jenkov.com/tutorials/dependency-injection/dependency-injection-replacing-factory-patterns.html
+https://hackernoon.com/how-to-write-decoupled-code-with-mediatr-the-mediator-pattern-u81231b0
+https://www.udemy.com/share/1057703@FvuEFkk580FQ9lpmseLDFR_AYK_qvUSgzZ_UdKHP2NElpjiL337W14l_MexbNu1m/
+
