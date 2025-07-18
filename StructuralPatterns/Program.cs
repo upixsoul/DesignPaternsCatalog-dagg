@@ -2,7 +2,11 @@
 using StructuralPatterns.Bridge;
 using StructuralPatterns.Composite;
 using StructuralPatterns.Decorator;
+using StructuralPatterns.Facade;
+using StructuralPatterns.Flyweight;
+using StructuralPatterns.Proxy;
 using Directory = StructuralPatterns.Composite.Directory;
+using EmailNotificationService = StructuralPatterns.Decorator.EmailNotificationService;
 using File = StructuralPatterns.Composite.File;
 
 namespace StructuralPatterns
@@ -127,6 +131,65 @@ namespace StructuralPatterns
 
             // Test the decorated service
             notificationService.SendNotification("user@example.com", "Hello, this is a test notification!");
+            #endregion
+
+            #region Facade
+            Console.WriteLine();
+            Console.WriteLine("Testing Facade Pattern");
+            // Create the facade
+            var userManagementFacade = new UserManagementFacade();
+
+            // Register a user with simplified interface
+            string result = userManagementFacade.RegisterUser(
+                username: "john_doe",
+                email: "john.doe@example.com",
+                password: "SecurePass123"
+            );
+
+            Console.WriteLine(result);
+            #endregion
+
+            #region Flyweight
+            Console.WriteLine();
+            Console.WriteLine("Testing Flyweight Pattern");
+
+            // Simulating a document with multiple characters
+            var document = new List<DocumentCharacter>();
+
+            // Add characters with shared formatting
+            document.Add(new DocumentCharacter('H', FormatFactory.GetFormat("Arial", 12, true, false)));
+            document.Add(new DocumentCharacter('e', FormatFactory.GetFormat("Arial", 12, true, false))); // Reuses same format
+            document.Add(new DocumentCharacter('l', FormatFactory.GetFormat("Arial", 12, true, false))); // Reuses same format
+            document.Add(new DocumentCharacter('l', FormatFactory.GetFormat("Times New Roman", 14, false, true)));
+            document.Add(new DocumentCharacter('o', FormatFactory.GetFormat("Times New Roman", 14, false, true))); // Reuses same format
+
+            // Display all characters
+            foreach (var character in document)
+            {
+                character.Display();
+            }
+            #endregion
+
+            #region Proxy
+            Console.WriteLine();
+            Console.WriteLine("Testing Flyweight Pattern");
+
+            IProductService productService = new CachingProductServiceProxy();
+
+            // First call: Fetches from real service and caches
+            Console.WriteLine(productService.GetProductDetails(1));
+            // Output: Fetching product details for ID 1 from database...
+            //         Product details for ID 1
+
+            // Second call: Returns cached result
+            Console.WriteLine(productService.GetProductDetails(1));
+            // Output: Returning cached product details for ID 1
+            //         Product details for ID 1
+
+            // New product ID: Fetches from real service and caches
+            Console.WriteLine(productService.GetProductDetails(2));
+            // Output: Fetching product details for ID 2 from database...
+            //         Product details for ID 2
             #endregion
         }
     }
